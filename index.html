@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheese Burst Restaurant | Premium Pizzas</title>
+    <style>
+        /* --- Base Styles & Reset --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; scroll-behavior: smooth; }
+        body { background-color: #fcf9f2; color: #333; line-height: 1.6; }
+
+        /* --- Navigation & Header --- */
+        header { background-color: #fff; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: #d32f2f; }
+        nav ul { list-style: none; display: flex; gap: 2rem; }
+        nav a { text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: #d32f2f; }
+
+        .header-actions { display: flex; align-items: center; gap: 1.5rem; }
+        .hamburger { display: none; font-size: 2rem; cursor: pointer; color: #333; }
+
+        /* Cart Icon */
+        .cart-icon { font-size: 1.5rem; cursor: pointer; position: relative; user-select: none; }
+        #cart-count { position: absolute; top: -5px; right: -10px; background-color: #d32f2f; color: white; font-size: 0.8rem; font-weight: bold; padding: 2px 6px; border-radius: 50%; }
+
+        /* --- Hero Section --- */
+        #home { background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover; height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 0 20px; }
+        #home h1 { font-size: 3.5rem; margin-bottom: 1rem; color: #ffca28; }
+        #home p { font-size: 1.2rem; margin-bottom: 2rem; max-width: 600px; }
+
+        /* Buttons */
+        .btn { padding: 12px 30px; background-color: #d32f2f; color: white; text-decoration: none; font-size: 1.1rem; font-weight: bold; border-radius: 5px; border: none; cursor: pointer; transition: background 0.3s; display: inline-block; }
+        .btn:hover { background-color: #b71c1c; }
+
+        .add-to-cart-btn { margin-top: 1rem; padding: 8px 15px; background-color: #ffca28; color: #333; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .add-to-cart-btn:hover { background-color: #ffb300; }
+
+        /* --- Sections --- */
+        .section-title { text-align: center; font-size: 2.5rem; color: #d32f2f; margin-bottom: 2rem; padding-top: 2rem; }
+        #menu { padding: 5rem 5%; background-color: #fff; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .menu-item { border: 1px solid #eee; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .menu-item:hover { transform: translateY(-5px); }
+        .menu-item h3 { display: flex; justify-content: space-between; color: #333; margin-bottom: 0.5rem; }
+        .price { color: #d32f2f; font-weight: bold; }
+
+        /* --- Cart Modal --- */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal-content { background-color: #fff; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; position: relative; }
+        .close-cart { position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; cursor: pointer; color: #aaa; }
+        .close-cart:hover { color: #333; }
+        .modal-content h2 { border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; }
+        .cart-item-row { display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px dashed #eee; padding-bottom: 0.5rem; }
+        .remove-item { color: #d32f2f; cursor: pointer; font-size: 0.9rem; margin-left: 10px; font-weight: bold; }
+        .cart-summary { margin-top: 1.5rem; text-align: right; border-top: 2px solid #eee; padding-top: 1rem; }
+        .checkout-btn { width: 100%; margin-top: 1rem; background-color: #25d366; } /* WhatsApp Green */
+        .checkout-btn:hover { background-color: #128C7E; }
+
+        /* --- Contact & Footer --- */
+        #contact { padding: 5rem 5%; background-color: #fcf9f2; }
+        .contact-container { display: flex; flex-wrap: wrap; gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .contact-info, .map-container { flex: 1; min-width: 300px; }
+        .contact-info h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #d32f2f; }
+        .map-container iframe { width: 100%; height: 300px; border: none; border-radius: 8px; }
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 3px #999; z-index: 100; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); }
+        footer { background-color: #333; color: white; text-align: center; padding: 1.5rem; }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            nav { display: none; position: absolute; top: 100%; left: 0; width: 100%; background-color: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            nav.active { display: block; }
+            nav ul { flex-direction: column; gap: 0; }
+            nav ul li { text-align: center; border-top: 1px solid #eee; }
+            nav ul li a { display: block; padding: 1rem; }
+            #home h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Cheese Burst</div>
+        
+        <nav id="nav-links">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <div class="cart-icon" id="cart-icon">
+                🛒 <span id="cart-count">0</span>
+            </div>
+            <div class="hamburger" id="hamburger">☰</div>
+        </div>
+    </header>
+
+    <section id="home">
+        <h1>Experience the Perfect Pull</h1>
+        <p>Authentic, hand-tossed pizzas loaded with premium ingredients and our signature cheese burst crust.</p>
+        <a href="#menu" class="btn">Explore Our Menu</a>
+    </section>
+
+    <section id="menu">
+        <h2 class="section-title">Our Specials</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Margherita Extra <span class="price">₹299</span></h3>
+                <p>Classic tomato sauce, fresh mozzarella, basil, and a drizzle of olive oil.</p>
+                <button class="add-to-cart-btn" data-name="Margherita Extra" data-price="299">Add to Cart</button>
+            </div>
+            <div class="menu-item">
+                <h3>The Ultimate Cheese Burst <span class="price">₹449</span></h3>
+                <p>Our signature crust stuffed with liquid cheese, topped with four types of cheese and herbs.</p>
+                <button class="add-to-cart-btn" data-name="The Ultimate Cheese Burst" data-price="449">Add to Cart</button>
+            </div>
+            <div class="menu-item">
+                <h3>Spicy Pepperoni <span class="price">₹399</span></h3>
+                <p>Crispy pepperoni, jalapeños, chili flakes, and rich mozzarella.</p>
+                <button class="add-to-cart-btn" data-name="Spicy Pepperoni" data-price="399">Add to Cart</button>
+            </div>
+            <div class="menu-item">
+                <h3>Veggie Supreme <span class="price">₹349</span></h3>
+                <p>Bell peppers, black olives, onions, mushrooms, and sweet corn.</p>
+                <button class="add-to-cart-btn" data-name="Veggie Supreme" data-price="349">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-cart" id="close-cart">×</span>
+            <h2>Your Order</h2>
+            <div id="cart-items-container">
+                <p class="empty-cart-msg">Your cart is empty.</p>
+                </div>
+            <div class="cart-summary">
+                <h3>Total: ₹<span id="cart-total">0</span></h3>
+                <button id="checkout-btn" class="btn checkout-btn">Checkout via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <section id="contact">
+        <h2 class="section-title">Visit or Order</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Opening Hours</h3>
+                <p>Monday - Sunday: 11:00 AM - 11:00 PM</p>
+                
+                <h3 style="margin-top: 2rem;">Contact Us</h3>
+                <p>📞 +91 98765 43210</p>
+                <p>📍 123 Food Street, Local City Area</p>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3800.0000000000000!2d83.30000000000000!3d17.70000000000000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDQyJzAwLjAiTiA4M8KwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <a href="https://wa.me/919876543210?text=Hi%20Cheese%20Burst,%20I%20have%20a%20question!" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+        💬
+    </a>
+
+    <footer>
+        <p>© 2026 Cheese Burst Restaurant. Built for Future Interns Task 3.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Mobile Menu Toggle ---
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('nav-links');
+
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // --- Cart Logic ---
+            let cart = [];
+            
+            // DOM Elements
+            const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+            const cartIcon = document.getElementById('cart-icon');
+            const cartModal = document.getElementById('cart-modal');
+            const closeCartBtn = document.getElementById('close-cart');
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            // Add items to cart array
+            addToCartBtns.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const name = e.target.getAttribute('data-name');
+                    const price = parseInt(e.target.getAttribute('data-price'));
+                    
+                    // Check if item already exists in cart to increase quantity
+                    const existingItem = cart.find(item => item.name === name);
+                    if(existingItem) {
+                        existingItem.quantity += 1;
+                    } else {
+                        cart.push({ name: name, price: price, quantity: 1 });
+                    }
+                    
+                    updateCartUI();
+                    
+                    // Brief visual feedback on button
+                    const originalText = e.target.innerText;
+                    e.target.innerText = "Added!";
+                    e.target.style.backgroundColor = "#4CAF50";
+                    e.target.style.color = "white";
+                    setTimeout(() => {
+                        e.target.innerText = originalText;
+                        e.target.style.backgroundColor = "#ffca28";
+                        e.target.style.color = "#333";
+                    }, 1000);
+                });
+            });
+
+            // Update the visual cart
+            function updateCartUI() {
+                // Update notification bubble
+                let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartCount.innerText = totalItems;
+
+                // Render items in modal
+                cartItemsContainer.innerHTML = '';
+                let totalPrice = 0;
+
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Your cart is empty.</p>';
+                } else {
+                    cart.forEach((item, index) => {
+                        let itemTotal = item.price * item.quantity;
+                        totalPrice += itemTotal;
+
+                        const itemDiv = document.createElement('div');
+                        itemDiv.classList.add('cart-item-row');
+                        itemDiv.innerHTML = `
+                            <span>${item.name} (x${item.quantity})</span>
+                            <span>₹${itemTotal} <span class="remove-item" onclick="removeItem(${index})">X</span></span>
+                        `;
+                        cartItemsContainer.appendChild(itemDiv);
+                    });
+                }
+                cartTotal.innerText = totalPrice;
+            }
+
+            // Global function to remove item (attached to the X button)
+            window.removeItem = function(index) {
+                cart.splice(index, 1);
+                updateCartUI();
+            }
+
+            // --- Modal Open/Close Logic ---
+            cartIcon.addEventListener('click', () => {
+                cartModal.style.display = 'flex';
+            });
+
+            closeCartBtn.addEventListener('click', () => {
+                cartModal.style.display = 'none';
+            });
+
+            // Close modal if user clicks outside the white box
+            window.addEventListener('click', (e) => {
+                if (e.target === cartModal) {
+                    cartModal.style.display = 'none';
+                }
+            });
+
+            // --- Checkout to WhatsApp ---
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    alert("Your cart is empty! Please add some pizzas first.");
+                    return;
+                }
+
+                const businessPhone = "919876543210"; // Replace with actual business number
+                let message = "Hello Cheese Burst! 🍕 I would like to place an order:\n\n";
+                
+                cart.forEach(item => {
+                    message += `- ${item.quantity}x ${item.name} (₹${item.price * item.quantity})\n`;
+                });
+                
+                message += `\n*Total:* ₹${cartTotal.innerText}\n\nPlease confirm my order!`;
+
+                const whatsappURL = `https://wa.me/${businessPhone}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappURL, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>
